@@ -104,7 +104,7 @@ void *doClientThd(void *arg)
     int sig_1 = -1;
     int sig_2 = -1;
     int sig_3 = -1;
-    int ture_of_rtp_tcp = 0;
+    int ture_of_rtp_tcp = 1;
     // rtp_over_udp
     int client_rtp_port = -1;
     int client_rtcp_port = -1;

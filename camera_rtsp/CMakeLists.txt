@@ -5,6 +5,11 @@ find_package(OpenCV REQUIRED)
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(FFMPEG REQUIRED libavcodec libavformat libavutil libswscale)
+
+# 包含 Asio
+set(ASIO_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/external/asio-1.20.0/include")
+include_directories(${ASIO_INCLUDE_DIR})
+
 # 检查目标系统架构
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
     message(STATUS "Target architecture is x86_64")
@@ -25,7 +30,7 @@ endif()
 set(EXECUTABLE_OUTPUT_PATH ./)
 # add_compile_options(-g)
 # set(CMAKE_BUILD_TYPE Release)
-message(FFMPEG librarys : ${FFMPEG_LIBRARY_DIRS} - ${FFMPEG_LIBRARIES})
+message(${OpenCV_INCLUDE_DIRS} FFMPEG librarys : ${FFMPEG_LIBRARY_DIRS} - ${FFMPEG_LIBRARIES})
 add_executable(camera_rtsp main.cc)
 target_link_libraries(camera_rtsp pthread avutil avformat avcodec swscale swresample ${OpenCV_LIBS})
 
@@ -36,5 +41,7 @@ add_executable(ffh264 ffh264.cc)
 target_link_libraries(ffh264 pthread ${OpenCV_LIBS} ${FFMPEG_LIBRARIES} avutil avformat avcodec swscale swresample)
 add_executable(ffh2642 ffh2642.cc)
 target_link_libraries(ffh2642 pthread ${OpenCV_LIBS} ${FFMPEG_LIBRARIES} avutil avformat avcodec swscale swresample)
+add_executable(simple-rtsp simple-rtsp.cc)
+target_link_libraries(simple-rtsp pthread ${OpenCV_LIBS} ${FFMPEG_LIBRARIES} avutil avformat avcodec swscale swresample)
 
 

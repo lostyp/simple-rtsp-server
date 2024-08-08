@@ -15,7 +15,7 @@ if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
     message(STATUS "Target architecture is x86_64")
     # 针对 x86_64 的特定操作
     # 依赖系统的ffmepg相关库
-    include_directories(/usr/local/include ${OpenCV_INCLUDE_DIRS} ${FFMPEG_INCLUDE_DIRS})
+    include_directories(/usr/local/include ${OpenCV_INCLUDE_DIRS} ${FFMPEG_INCLUDE_DIRS} ${ASIO_INCLUDE_DIR})
     link_directories(/usr/local/lib /usr/lib ${FFMPEG_LIBRARY_DIRS} /usr/lib/x86_64-linux-gnu)
 elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
     message(STATUS "Target architecture is ARM64")
@@ -39,9 +39,14 @@ target_link_libraries(camera_rtsp pthread avutil avformat avcodec swscale swresa
 
 add_executable(ffh264 ffh264.cc)
 target_link_libraries(ffh264 pthread ${OpenCV_LIBS} ${FFMPEG_LIBRARIES} avutil avformat avcodec swscale swresample)
+
 add_executable(ffh2642 ffh2642.cc)
 target_link_libraries(ffh2642 pthread ${OpenCV_LIBS} ${FFMPEG_LIBRARIES} avutil avformat avcodec swscale swresample)
+
 add_executable(simple-rtsp simple-rtsp.cc)
 target_link_libraries(simple-rtsp pthread ${OpenCV_LIBS} ${FFMPEG_LIBRARIES} avutil avformat avcodec swscale swresample)
+
+# add_executable(simple-rtsp-camera simple-rtsp-camera.cc)
+# target_link_libraries(simple-rtsp-camera pthread ${OpenCV_LIBS} ${FFMPEG_LIBRARIES} avutil avformat avcodec swscale swresample)
 
 

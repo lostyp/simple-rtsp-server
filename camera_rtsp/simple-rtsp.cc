@@ -11,6 +11,7 @@ extern "C"
 #include <libavformat/avformat.h>
 #include <libavutil/imgutils.h>
 #include <libswscale/swscale.h>
+#include <libavutil/opt.h>
 }
 
 using asio::ip::tcp;
@@ -78,7 +79,7 @@ private:
     }
     else if (request.find("DESCRIBE") != std::string::npos)
     {
-      send_response("200 OK", "Content-Base: rtsp://172.20.80.184:8554/live\r\nContent-Type: application/sdp",
+      send_response("200 OK", "Content-Base: rtsp://172.19.186.55:8554/live\r\nContent-Type: application/sdp",
                     "v=0\r\n"
                     "o=- 0 0 IN IP4 127.0.0.1\r\n"
                     "s=No Name\r\n"
@@ -118,6 +119,7 @@ private:
       socket_.send(asio::buffer(response));
 
       // 在此处开始流媒体传输
+      std::cout << "response:play:" << response << std::endl;
       start_streaming();
     }
   }
@@ -138,7 +140,9 @@ private:
 
   void start_streaming()
   {
-    VideoCapture cap(0);
+    VideoCapture cap(0, CAP_V4L2);
+    cap.set(CAP_PROP_FOURCC, VideoWriter::fourcc('M', 'J', 'P', 'G'));
+
     if (!cap.isOpened())
     {
       cerr << "Couldn't open capture." << endl;
@@ -147,7 +151,7 @@ private:
 
     int frameWidth = static_cast<int>(cap.get(CAP_PROP_FRAME_WIDTH));
     int frameHeight = static_cast<int>(cap.get(CAP_PROP_FRAME_HEIGHT));
-    int fps = 15;
+    int fps = 30;
 
     SwsContext *swsCtx = sws_getContext(
         frameWidth, frameHeight, AV_PIX_FMT_BGR24,
@@ -161,9 +165,11 @@ private:
     codecCtx->width = frameWidth;
     codecCtx->height = frameHeight;
     codecCtx->time_base = (AVRational){1, fps};
-    codecCtx->gop_size = fps;
+    codecCtx->gop_size = 1;
     codecCtx->max_b_frames = 0;
     codecCtx->pix_fmt = AV_PIX_FMT_YUV420P;
+    av_opt_set(codecCtx->priv_data, "preset", "ultrafast", 0);
+    av_opt_set(codecCtx->priv_data, "tune", "zerolatency", 0);
 
     if (avcodec_open2(codecCtx, codec, nullptr) < 0)
     {
@@ -178,6 +184,7 @@ private:
     avFrame->height = codecCtx->height;
     av_frame_get_buffer(avFrame, 32);
     namedWindow("frame", WINDOW_AUTOSIZE);
+    std::cout << "start while" << std::endl;
 
     while (true)
     {
@@ -188,15 +195,16 @@ private:
 
       uint8_t *data[4];
       int linesize[4];
-      av_frame_get_buffer(avFrame, 32);
+      // av_frame_get_buffer(avFrame, 32);
 
       data[0] = frame.data;
       linesize[0] = static_cast<int>(frame.step[0]);
       avFrame->data[0] = data[0];
       avFrame->linesize[0] = linesize[0];
+      std::cout << "sws_scale" << std::endl;
 
       sws_scale(swsCtx, (const uint8_t *const *)data, linesize, 0, frame.rows, avFrame->data, avFrame->linesize);
-
+      std::cout << "sws_scale finish" << std::endl;
       AVPacket pkt;
       av_init_packet(&pkt);
       pkt.data = nullptr;
@@ -211,7 +219,7 @@ private:
         }
       }
 
-      std::this_thread::sleep_for(std::chrono::milliseconds(1000 / fps));
+      // std::this_thread::sleep_for(std::chrono::milliseconds(1000 / (fps)));
       if (waitKey(1) == 27)
         break; // Wait for 'esc' key press to exit
     }
@@ -244,6 +252,7 @@ private:
 
   void send_rtp_packet(const uint8_t *data, size_t size)
   {
+    //std::cout << "send rtp packet" << std::endl;
     try
     {
       static uint16_t sequence_number = 0;
@@ -269,7 +278,7 @@ private:
 
       // 更新序列号和时间戳
       sequence_number++;
-      timestamp += 90000 / 15; // 假设每秒30帧
+      timestamp += 90000 / 30; // 假设每秒30帧
 
       // 发送 RTP over TCP
       send_rtp_over_tcp(rtp_packet, sizeof(rtp_packet));
@@ -282,7 +291,7 @@ private:
 
   void initialize_ffmpeg()
   {
-    av_register_all();
+    //av_register_all();
     avformat_network_init();
   }
 
@@ -311,6 +320,10 @@ private:
                            {
                              if (!ec)
                              {
+                               asio::ip::tcp::no_delay option(true);
+
+                               new_session->socket().set_option(option);
+
                                new_session->start();
                              }
                              start_accept();

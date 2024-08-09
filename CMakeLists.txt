@@ -9,13 +9,16 @@ if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
     # 依赖系统的ffmepg相关库
     include_directories(/usr/local/include ./ ./rtp ./3rdparty)
     link_directories(/usr/local/lib /usr/lib)
+    add_subdirectory(camera_rtsp)
 elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
     message(STATUS "Target architecture is ARM64")
     # 针对 ARM64 的特定操作
     # 使用BSP中的库
     include_directories(/usr/local/include ./ ./rtp ./3rdparty /j6/platform_sdk/out/release-gcc_11.4-64/target/deploy/rootfs-dev/include)
     link_directories(/usr/local/lib /usr/lib /j6/platform_sdk/out/release-gcc_11.4-64/target/deploy/rootfs-dev/usr/lib/aarch64-linux-gnu)
-
+    add_subdirectory(camera_rtsps)
+    add_subdirectory(codec_sample)
+    add_subdirectory(demo_external)
 else()
     message(FATAL_ERROR "Unknown target architecture: ${CMAKE_SYSTEM_PROCESSOR}")
 endif()
@@ -32,4 +35,3 @@ set(CMAKE_BUILD_TYPE Release)
 add_executable(rtsp_server ${SRC} ${RTP} ${3RD})
 target_link_libraries(rtsp_server pthread avutil avformat avcodec swscale swresample)
 
-add_subdirectory(camera_rtsp)

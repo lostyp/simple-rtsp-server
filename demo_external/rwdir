@@ -1,0 +1,66 @@
+#!/bin/sh
+
+# set storage dir
+rw_root=/userdata/mount
+mkdir -p $rw_root
+
+# unsupport dir
+unsupport_dir="userdata dev proc"
+
+# help
+if [ "$1" == "help" ] ||  [ "$1" == "" ] ;then
+	echo -en "\nUSAGE:$0 <dir> <dir> ..., mount dir \n"
+	echo -en "    not support: /userdata*, / \n"
+	echo -en "    such as: $0 /system/etc /system/bin/ \n"
+	echo -en "\nUSAGE:$0 del, If you want to update metadata, delete $rw_root first \n\n"
+	exit 0
+fi
+
+# delete storage dir
+if [ "$1" == "del" ];then
+	rm -rf $rw_root
+	sync
+	exit 0
+fi
+
+# mount all dir
+while [ 1 ]
+do
+	# check dir
+	if [ ! -d "$1" ] || [ "$1" == "/" ];then
+		exit 0
+	fi
+	
+	for i in $unsupport_dir;do
+		len1=`expr length $i`
+		len2=`expr match $(echo $1 | tr -d "/") $i`
+		if [ $len1 -eq $len2 ];then
+			echo "err: unsupport $1"
+			exit 0
+		fi
+	done
+	
+	# get dir
+	echo $1
+	dir_path=$1
+	dir=${dir_path##*/}
+	if [ -z "$dir" ];then
+		# delete the trailing '/'
+		dir_path=${dir_path%/*}
+		dir=${dir_path##*/}
+	fi
+	
+	# cp dir
+	if [ ! -d $rw_root/$dir ];then
+		cp -af $dir_path $rw_root
+		sync
+	fi
+	
+	# mount
+	umount $dir_path &> /dev/null
+	sync
+	mount -o noatime $rw_root/$dir $dir_path
+	
+	shift
+done
+exit 0

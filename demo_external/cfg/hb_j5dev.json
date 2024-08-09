@@ -1,0 +1,182 @@
+{
+	"config_number": 1,
+	"board_name": "j5dvb",
+	"config_0": {
+		"comment": "ovx8b(ph/sensing) rggb 3840x2160 pwl raw12 30fps on host0 max9296",
+		"interface_type": "mipi",
+		"deserial_num": 1,
+		"lpwm_num": 4,
+		"lpwm_0": {
+			"lpwm_index": 0,
+			"lpwm_enable": "0xf",
+			"trigger_mode": 4,
+			"offset_us": [
+				1,
+				1,
+				1,
+				1
+			],
+			"period_us": [
+				33333,
+				33333,
+				33333,
+				33333
+			],
+			"duty_us": [
+				4000,
+				4000,
+				4000,
+				4000
+			]
+		},
+		"lpwm_1": {
+			"lpwm_index": 1,
+			"lpwm_enable": "0xf",
+			"trigger_mode": 4,
+			"offset_us": [
+				1,
+				1,
+				1,
+				1
+			],
+			"period_us": [
+				33333,
+				33333,
+				33333,
+				33333
+			],
+			"duty_us": [
+				4000,
+				4000,
+				4000,
+				4000
+			]
+		},
+		"lpwm_2": {
+			"lpwm_index": 2,
+			"lpwm_enable": "0xf",
+			"trigger_mode": 4,
+			"offset_us": [
+				1,
+				1,
+				1,
+				1
+			],
+			"period_us": [
+				33333,
+				33333,
+				33333,
+				33333
+			],
+			"duty_us": [
+				4000,
+				4000,
+				4000,
+				4000
+			]
+		},
+		"lpwm_3": {
+			"lpwm_index": 2,
+			"lpwm_enable": "0xf",
+			"trigger_mode": 4,
+			"offset_us": [
+				1,
+				1,
+				1,
+				1
+			],
+			"period_us": [
+				33333,
+				33333,
+				33333,
+				33333
+			],
+			"duty_us": [
+				4000,
+				4000,
+				4000,
+				4000
+			]
+		},
+		"deserial_0": {
+			"deserial_name": "max96712",
+			"deserial_addr": "0x2d",
+			"bus_type": 0,
+			"bus_num": 2,
+			"power_mode": 0
+		},
+		"port_number": 4,
+		"port_0": {
+			"dev_port": 0,
+			"bus_type": 0,
+			"bus_num": 2,
+			"entry_num": 2,
+			"serial_addr": "0x40",
+			"sensor_name": "ar0147",
+			"reg_width": 16,
+			"extra_mode": 3,
+			"config_index": 256,
+			"sensor_mode": 0,
+			"fps": 30,
+			"resolution": 720,
+			"deserial_index": 0,
+			"deserial_port": 0,
+			"data_path": "./cfg/cim_config.json",
+			"config_path": "./cfg/hb_mipi_ar0147_yuv422_%dfps_%dP.json"
+		},
+		"port_1": {
+			"dev_port": 1,
+			"bus_type": 0,
+			"bus_num": 2,
+			"entry_num": 2,
+			"serial_addr": "0x41",
+			"sensor_name": "ar0147",
+			"reg_width": 16,
+			"extra_mode": 3,
+			"config_index": 256,
+			"sensor_mode": 5,
+			"fps": 30,
+			"resolution": 720,
+			"deserial_index": 0,
+			"deserial_port": 1,
+			"data_path": "./cfg/cim_config.json",
+			"config_path": "./cfg/hb_mipi_ar0147_yuv422_%dfps_%dP.json"
+		},
+		"port_2": {
+			"dev_port": 2,
+			"bus_type": 0,
+			"bus_num": 2,
+			"entry_num": 2,
+			"serial_addr": "0x42",
+			"sensor_name": "ar0147",
+			"reg_width": 16,
+			"extra_mode": 3,
+			"config_index": 256,
+			"sensor_mode": 0,
+			"fps": 30,
+			"resolution": 720,
+			"deserial_index": 0,
+			"deserial_port": 2,
+			"data_path": "./cfg/cim_config.json",
+			"config_path": "./cfg/hb_mipi_ar0147_yuv422_%dfps_%dP.json"
+		},
+		"port_3": {
+			"dev_port": 3,
+			"bus_type": 0,
+			"bus_num": 2,
+			"entry_num": 2,
+			"serial_addr": "0x43",
+			"sensor_name": "ar0147",
+			"reg_width": 16,
+			"extra_mode": 3,
+			"config_index": 256,
+			"sensor_mode": 0,
+			"fps": 30,
+			"resolution": 720,
+			"deserial_index": 0,
+			"deserial_port": 3,
+			"data_path": "./cfg/cim_config.json",
+			"config_path": "./cfg/hb_mipi_ar0147_yuv422_%dfps_%dP.json"
+		}
+	}
+}
